@@ -1,6 +1,8 @@
 package com.example.gerard.todoapp;
 
+
 import android.os.Bundle;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -13,12 +15,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TodoListActivity extends DrawerActivity {
+public class TodoListActivity extends DrawerActivity implements
+        DrawerActivity.FabClickListener,
+        NewTodoDialog.NewTodoDialogListener {
+
     MyTodoRecyclerViewAdapter myTodoRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setFabClickListener(this);
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.todo_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -29,16 +36,30 @@ public class TodoListActivity extends DrawerActivity {
                 new SimpleItemTouchHelperCallback(myTodoRecyclerViewAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
+    }
 
-        for (int i = 1; i <= 30; i++) {
-            myTodoRecyclerViewAdapter.getList().add(new TodoItem("TODO " + i));
+    @Override
+    public void onFabClick() {
+        new NewTodoDialog().show(getSupportFragmentManager(), "NewTodoDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(NewTodoDialog dialog) {
+        if(! dialog.title.isEmpty()) {
+            myTodoRecyclerViewAdapter.getList().add(new TodoItem(dialog.title, dialog.deadline));
+            myTodoRecyclerViewAdapter.notifyDataSetChanged();
         }
-        myTodoRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDialogNegativeClick(NewTodoDialog dialog) {
+        // Cancelled
     }
 }
 
 class MyTodoRecyclerViewAdapter extends RecyclerView.Adapter<MyTodoRecyclerViewAdapter.CustomViewHolder>
         implements ItemTouchHelperAdapter {
+
     private List<TodoItem> todoItemList;
 
     public MyTodoRecyclerViewAdapter() {
@@ -60,7 +81,8 @@ class MyTodoRecyclerViewAdapter extends RecyclerView.Adapter<MyTodoRecyclerViewA
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
         TodoItem todoItem = todoItemList.get(i);
 
-        customViewHolder.textView.setText(todoItem.getTitle());
+        customViewHolder.todoTitle.setText(todoItem.getTitle());
+        customViewHolder.todoDeadline.setText(todoItem.getDeadline());
     }
 
     @Override
@@ -82,11 +104,13 @@ class MyTodoRecyclerViewAdapter extends RecyclerView.Adapter<MyTodoRecyclerViewA
     }
     
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected TextView textView;
+        protected TextView todoTitle;
+        protected TextView todoDeadline;
 
         public CustomViewHolder(View view) {
             super(view);
-            this.textView = (TextView) view.findViewById(R.id.todo_title);
+            this.todoTitle = (TextView) view.findViewById(R.id.todo_title);
+            this.todoDeadline = (TextView) view.findViewById(R.id.todo_deadline);
         }
     }
 }

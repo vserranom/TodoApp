@@ -2,7 +2,6 @@ package com.example.gerard.todoapp;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +21,12 @@ import com.google.firebase.auth.FirebaseAuth;
 public class DrawerActivity extends GoogleApiActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public interface FabClickListener {
+        void onFabClick();
+    }
+
+    FabClickListener fabClickListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +38,9 @@ public class DrawerActivity extends GoogleApiActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(fabClickListener != null) {
+                    fabClickListener.onFabClick();
+                }
             }
         });
 
@@ -52,6 +58,10 @@ public class DrawerActivity extends GoogleApiActivity
 
         userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+    }
+
+    public void setFabClickListener(FabClickListener listener){
+        fabClickListener = listener;
     }
 
     @Override

@@ -8,4 +8,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="dialog_new_todo">Nuevo TODO</string>
+    <string name="dialog_new_todo_create">Crear</string>
+    <string name="dialog_new_todo_cancel">Cancelar</string>
 </resources>
