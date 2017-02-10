@@ -146,7 +146,7 @@ public class SignInActivity extends GoogleApiActivity implements
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            startActivity(new Intent(SignInActivity.this, DrawerActivity.class));
+            startActivity(new Intent(SignInActivity.this, TodoListActivity.class));
         }
     }
 

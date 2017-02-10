@@ -13,4 +13,11 @@
     tools:context="com.example.gerard.todoapp.DrawerActivity"
     tools:showIn="@layout/app_bar_drawer">
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:id="@+id/todo_list">
+
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
