@@ -1,14 +1,13 @@
 package com.example.gerard.todoapp;
 
-
 import android.os.Bundle;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class TodoListActivity extends DrawerActivity implements
     @Override
     public void onDialogPositiveClick(NewTodoDialog dialog) {
         if(! dialog.title.isEmpty()) {
-            myTodoRecyclerViewAdapter.getList().add(new TodoItem(dialog.title, dialog.deadline));
+            myTodoRecyclerViewAdapter.getList().add(new TodoItem(dialog.title, dialog.deadline, dialog.imageUri));
             myTodoRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
@@ -83,6 +82,7 @@ class MyTodoRecyclerViewAdapter extends RecyclerView.Adapter<MyTodoRecyclerViewA
 
         customViewHolder.todoTitle.setText(todoItem.getTitle());
         customViewHolder.todoDeadline.setText(todoItem.getDeadline());
+        customViewHolder.todoImage.setImageURI(todoItem.getImageUri());
     }
 
     @Override
@@ -106,11 +106,13 @@ class MyTodoRecyclerViewAdapter extends RecyclerView.Adapter<MyTodoRecyclerViewA
     class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView todoTitle;
         protected TextView todoDeadline;
+        protected ImageView todoImage;
 
         public CustomViewHolder(View view) {
             super(view);
             this.todoTitle = (TextView) view.findViewById(R.id.todo_title);
             this.todoDeadline = (TextView) view.findViewById(R.id.todo_deadline);
+            this.todoImage = (ImageView) view.findViewById(R.id.todo_image);
         }
     }
 }

@@ -11,10 +11,12 @@ import java.util.Date;
 public class TodoItem {
     String title;
     String deadline;
+    Uri imageUri;
 
-    public TodoItem(String title, String deadline){
+    public TodoItem(String title, String deadline, Uri imageUri){
         this.title = title;
         this.deadline = deadline;
+        this.imageUri = imageUri;
     }
 
     public String getTitle(){
@@ -22,6 +24,9 @@ public class TodoItem {
     }
     public String getDeadline() {
         return deadline;
+    }
+    public Uri getImageUri(){
+        return imageUri;
     }
 }
 
