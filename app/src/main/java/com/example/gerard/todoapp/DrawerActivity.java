@@ -12,8 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-public class DrawerActivity extends AppCompatActivity
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
+
+public class DrawerActivity extends GoogleApiActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -40,6 +46,12 @@ public class DrawerActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        TextView userEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.userEmail);
+        TextView userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.userName);
+
+        userEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
     }
 
     @Override
@@ -92,6 +104,14 @@ public class DrawerActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.nav_sign_out) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(Status status) {
+                    FirebaseAuth.getInstance().signOut();
+                    finish();
+                }
+            });
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

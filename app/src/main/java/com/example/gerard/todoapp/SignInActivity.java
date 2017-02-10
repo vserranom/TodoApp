@@ -26,11 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class SignInActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener,
+public class SignInActivity extends GoogleApiActivity implements
         View.OnClickListener {
-
-    private GoogleApiClient mGoogleApiClient;
 
     static final int RC_SIGN_IN = 9001;
 
@@ -46,16 +43,6 @@ public class SignInActivity extends AppCompatActivity implements
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                // Put your web_client_id in res/values/keys.xml
-                .requestIdToken(getString(R.string.web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -68,7 +55,6 @@ public class SignInActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
 
         mAuth.addAuthStateListener(mAuthListener);
 
@@ -93,15 +79,10 @@ public class SignInActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // Log error
     }
 
     @Override
