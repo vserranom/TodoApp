@@ -25,6 +25,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignInActivity extends GoogleApiActivity implements
         View.OnClickListener {
@@ -143,10 +145,15 @@ public class SignInActivity extends GoogleApiActivity implements
         }
     }
 
-    private void updateUI(FirebaseUser user) {
+    private void updateUI(FirebaseUser firebaseUser) {
         hideProgressDialog();
-        if (user != null) {
-            startActivity(new Intent(SignInActivity.this, DatabaseTest.class));
+        if (firebaseUser != null) {
+            User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+            mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
+
+            startActivity(new Intent(SignInActivity.this, TodoListActivity.class));
         }
     }
 

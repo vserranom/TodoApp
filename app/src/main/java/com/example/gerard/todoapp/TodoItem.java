@@ -1,32 +1,43 @@
 package com.example.gerard.todoapp;
 
-import android.net.Uri;
 
-import java.util.Date;
+import com.google.firebase.database.Exclude;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by gerard on 23/01/2017.
  */
 
 public class TodoItem {
-    String title;
-    String deadline;
-    Uri imageUri;
+    public String userId;
+    public String username;
+    public String title;
+    public String deadline;
+    public String imageUri;
 
-    public TodoItem(String title, String deadline, Uri imageUri){
+    public TodoItem(){
+
+    }
+
+    public TodoItem(String userId, String username, String title, String deadline, String imageUri){
+        this.userId = userId;
+        this.username = username;
         this.title = title;
         this.deadline = deadline;
         this.imageUri = imageUri;
     }
 
-    public String getTitle(){
-        return title;
-    }
-    public String getDeadline() {
-        return deadline;
-    }
-    public Uri getImageUri(){
-        return imageUri;
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userId", userId);
+        result.put("username", username);
+        result.put("title", title);
+        result.put("deadline", deadline);
+        result.put("imageUri", imageUri);
+
+        return result;
     }
 }
 

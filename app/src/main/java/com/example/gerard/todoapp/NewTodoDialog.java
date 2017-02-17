@@ -11,7 +11,6 @@ import android.os.Bundle;
 
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,8 +35,7 @@ public class NewTodoDialog extends DialogFragment implements
 
     public String title;
     public String deadline;
-    public Uri imageUri;
-
+    public String imageUri;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -93,8 +91,9 @@ public class NewTodoDialog extends DialogFragment implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_IMAGE_PICK) {
             if(data != null) {
-                imageUri = data.getData();
-                imageViewPreview.setImageURI(imageUri);
+                Uri uri = data.getData();
+                imageViewPreview.setImageURI(uri);
+                imageUri = uri.toString();
             }
         }
     }
