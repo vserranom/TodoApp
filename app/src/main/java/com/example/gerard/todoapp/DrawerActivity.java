@@ -25,11 +25,20 @@ public class DrawerActivity extends GoogleApiActivity
         void onFabClick();
     }
 
+    public interface NavClickListener {
+        void onNavAllClick();
+        void onNavMyClick();
+        void onNavSignOutClick();
+    }
+
+    NavClickListener navClickListener;
+
     FabClickListener fabClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,6 +71,10 @@ public class DrawerActivity extends GoogleApiActivity
 
     public void setFabClickListener(FabClickListener listener){
         fabClickListener = listener;
+    }
+
+    public void setNavClickListener(NavClickListener listener){
+        navClickListener = listener;
     }
 
     @Override
@@ -99,29 +112,15 @@ public class DrawerActivity extends GoogleApiActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_all_todos) {
+            navClickListener.onNavAllClick();
+        } else if (id == R.id.nav_my_todos) {
+            navClickListener.onNavMyClick();
         } else if (id == R.id.nav_sign_out) {
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-                @Override
-                public void onResult(Status status) {
-                    FirebaseAuth.getInstance().signOut();
-                    finish();
-                }
-            });
+           navClickListener.onNavSignOutClick();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

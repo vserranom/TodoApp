@@ -148,12 +148,11 @@ public class SignInActivity extends GoogleApiActivity implements
     private void updateUI(FirebaseUser firebaseUser) {
         hideProgressDialog();
         if (firebaseUser != null) {
-            User user = new User(firebaseUser.getDisplayName(), firebaseUser.getEmail());
+            FirebaseDatabase.getInstance().getReference("users")
+                    .child(firebaseUser.getUid())
+                    .setValue(new User(firebaseUser.getDisplayName(), firebaseUser.getEmail()));
 
-            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-            mDatabase.child("users").child(firebaseUser.getUid()).setValue(user);
-
-            startActivity(new Intent(SignInActivity.this, TodoListActivity.class));
+            startActivity(new Intent(SignInActivity.this, MainActivity.class));
         }
     }
 

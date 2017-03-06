@@ -16,9 +16,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TodoListActivity"
-            android:label="@string/title_activity_drawer"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

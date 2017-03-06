@@ -2,7 +2,7 @@
     <string name="app_name">TodoApp</string>
     <string name="loading">Loading…</string>
 
-    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="title_activity_main">TODO App</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

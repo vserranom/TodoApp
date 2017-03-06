@@ -30,10 +30,16 @@ public class TodoListActivity extends DrawerActivity implements
         DrawerActivity.FabClickListener,
         NewTodoDialog.NewTodoDialogListener {
 
+    interface DialogPositiveClickListener {
+       void onDialogPositiveClick(String title, String deadline, String imageUri);
+    }
+
     String TAG = "TodoListActivity";
 
     MyTodoRecyclerViewAdapter myTodoRecyclerViewAdapter;
     DatabaseReference mDatabase;
+
+    DialogPositiveClickListener dialogPositiveClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,40 +59,6 @@ public class TodoListActivity extends DrawerActivity implements
                 new SimpleItemTouchHelperCallback(myTodoRecyclerViewAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
-
-
-        FirebaseDatabase.getInstance().getReference("todos").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-
-                TodoItem todo = dataSnapshot.getValue(TodoItem.class);
-
-                myTodoRecyclerViewAdapter.getList().add(todo);
-                myTodoRecyclerViewAdapter.notifyDataSetChanged();
-                myTodoRecyclerViewAdapter.notifyItemInserted(myTodoRecyclerViewAdapter.getItemCount());
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "postComments:onCancelled", databaseError.toException());
-            }
-        });
     }
 
     @Override
@@ -94,49 +66,13 @@ public class TodoListActivity extends DrawerActivity implements
         new NewTodoDialog().show(getSupportFragmentManager(), "NewTodoDialogFragment");
     }
 
-    @Override
-    public void onDialogPositiveClick(NewTodoDialog dialog) {
-        if(! dialog.title.isEmpty()) {
-            writeNewTodo(dialog.title, dialog.deadline, dialog.imageUri);
-        }
+    public void setOnDialogPositiveClickListener(DialogPositiveClickListener listener){
+        dialogPositiveClickListener = listener;
     }
 
     @Override
-    public void onDialogNegativeClick(NewTodoDialog dialog) {
-        // Cancelled
-    }
-
-    public void writeNewTodo(final String title, final String deadline, final String imageUri){
-
-        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-
-                        if (user == null) {
-                            Log.e(TAG, "User " + userId + " is unexpectedly null");
-                        } else {
-                            String key = mDatabase.child("todos").push().getKey();
-                            TodoItem todo = new TodoItem(userId, username, title, deadline, imageUri);
-                            Map<String, Object> todoValues = todo.toMap();
-
-                            Map<String, Object> childUpdates = new HashMap<>();
-                            childUpdates.put("/todos/" + key, todoValues);
-                            childUpdates.put("/user-todos/" + userId + "/" + key, todoValues);
-
-                            mDatabase.updateChildren(childUpdates);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        //Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                    }
-                });
+    public void onDialogPositiveClick(String title, String deadline, String imageUri) {
+        dialogPositiveClickListener.onDialogPositiveClick(title, deadline, imageUri);
     }
 }
 
@@ -195,7 +131,7 @@ class MyTodoRecyclerViewAdapter extends RecyclerView.Adapter<MyTodoRecyclerViewA
         todoItemList.remove(position);
         notifyItemRemoved(position);
     }
-    
+
     class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView todoTitle;
         protected TextView todoDeadline;

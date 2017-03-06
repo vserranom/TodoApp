@@ -23,8 +23,7 @@ public class NewTodoDialog extends DialogFragment implements
     static final int RC_IMAGE_PICK = 9000;
 
     public interface NewTodoDialogListener {
-        void onDialogPositiveClick(NewTodoDialog dialog);
-        void onDialogNegativeClick(NewTodoDialog dialog);
+        void onDialogPositiveClick(String title, String deadline, String imageUri);
     }
 
     NewTodoDialogListener mListener;
@@ -55,12 +54,11 @@ public class NewTodoDialog extends DialogFragment implements
                         title = editTextTitle.getText().toString();
                         deadline = datePickerDeadline.getDayOfMonth() + "/" + datePickerDeadline.getMonth() + "/" + datePickerDeadline.getYear();
 
-                        mListener.onDialogPositiveClick(NewTodoDialog.this);
+                        mListener.onDialogPositiveClick(title, deadline, imageUri);
                     }
                 })
                 .setNegativeButton(R.string.dialog_new_todo_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogNegativeClick(NewTodoDialog.this);
                     }
                 });
         return builder.create();
